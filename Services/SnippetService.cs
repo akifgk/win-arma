@@ -39,7 +39,7 @@ namespace WinArma.Services
             // Check dynamic snippets
             foreach (var kv in dynamicSnippets)
             {
-                if (isSnippetTrigger || kv.Key.StartsWith(clean) || clean.StartsWith(kv.Key))
+                if (isSnippetTrigger || kv.Key.StartsWith(clean, StringComparison.OrdinalIgnoreCase) || clean.StartsWith(kv.Key, StringComparison.OrdinalIgnoreCase))
                 {
                     string evaluated = kv.Value();
                     results.Add(CreateSnippetItem(kv.Key, evaluated, clean == kv.Key ? 1500 : 950));

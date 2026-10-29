@@ -19,6 +19,7 @@ namespace WinArma
         private readonly HotkeyManager _hotkeyManager = new();
         private readonly SearchOrchestrator _orchestrator = new();
         private bool _isInitialized = false;
+        private int _searchVersion = 0;
         private double _currentListHeight = 0;
 
         public MainWindow()
@@ -281,6 +282,7 @@ namespace WinArma
         private async void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             var text = SearchBox.Text;
+            int version = ++_searchVersion;
             PlaceholderText.Visibility = string.IsNullOrEmpty(text) ? Visibility.Visible : Visibility.Collapsed;
 
             if (string.IsNullOrWhiteSpace(text))
@@ -297,6 +299,9 @@ namespace WinArma
             if (!_isInitialized) return;
 
             var results = await _orchestrator.SearchAsync(text);
+
+            // A newer keystroke superseded this search; its results would overwrite the fresher list
+            if (version != _searchVersion) return;
 
             // Add quick access to Win-Arma settings if user searches for "ayar", "settings"
             var trimmed = text.Trim().ToLowerInvariant();

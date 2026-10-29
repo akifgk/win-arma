@@ -62,15 +62,18 @@ namespace WinArma.Services
                 }
 
                 var result = _dataTable.Compute(expression, null);
-                if (result != null && double.TryParse(result.ToString(), NumberStyles.Any, CultureInfo.InvariantCulture, out double numResult))
+                // Convert the boxed number directly: round-tripping through ToString() + invariant parse
+                // read "2,5" (tr-TR) as 25
+                if (result is IConvertible)
                 {
+                    double numResult = Convert.ToDouble(result, CultureInfo.InvariantCulture);
                     if (double.IsInfinity(numResult) || double.IsNaN(numResult))
                     {
                         return null;
                     }
 
-                    string formatted = numResult.ToString("N2", CultureInfo.CurrentCulture).TrimEnd('0').TrimEnd(',');
-                    if (string.IsNullOrEmpty(formatted)) formatted = "0";
+                    // No digit grouping, so the copied answer pastes cleanly; keeps small values like 0.001
+                    string formatted = Math.Round(numResult, 10).ToString("0.##########", CultureInfo.CurrentCulture);
 
                     return CreateCalculatorResult(formatted, trimmed);
                 }

@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+#### ✨ Added
+- **Snippet editor** — add, edit and delete text snippets from Settings → Metin Kısayolları (multi-line content, inline validation)
+
+#### 🐛 Fixed
+- Saving settings reset `WindowOpacity` and `HotkeyKey` to their defaults
+- Snippets loaded from `settings.json` were case-sensitive
+- Calculator read decimal results as integers in comma-decimal cultures (`10/4` gave 25), dropped small values (`0.001` gave 0) and copied digit-grouped answers
+- System commands matched a single typed character (`k` listed Kapat / Kilitle); now exact name or a prefix of 3+ characters
+- A hotkey the system already owns (e.g. Win+Space) left the launcher with no hotkey; it now falls back to Ctrl+Space
+- A slow earlier search could overwrite the results of a newer one
+- README: `y` prefix is YouTube, and the snippet example no longer lists unsupported `__auto__` markers
+
+---
+
 ## [1.0.0] - 2026-10-29
 
 ### 🎉 Initial Release
