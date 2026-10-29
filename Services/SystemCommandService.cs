@@ -48,7 +48,9 @@ namespace WinArma.Services
 
             foreach (var cmd in _commands)
             {
-                if (cmd.Key.Contains(clean) || clean.Contains(cmd.Key))
+                // Prefix match only, and not on a single character: typing "k" or "a" must not
+                // surface shutdown/restart entries that Enter would run
+                if (clean == cmd.Key || (clean.Length >= 3 && cmd.Key.StartsWith(clean, StringComparison.Ordinal)))
                 {
                     results.Add(new SearchResultItem
                     {

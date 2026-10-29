@@ -46,7 +46,11 @@ namespace WinArma.Services
             };
 
             _isRegistered = NativeMethods.RegisterHotKey(_hWnd, HOTKEY_ID, modifier | NativeMethods.MOD_NOREPEAT, vkKey);
-            return _isRegistered;
+            if (_isRegistered) return true;
+
+            // Chosen combo is taken by the system (e.g. Win+Space) - keep the launcher reachable
+            _isRegistered = NativeMethods.RegisterHotKey(_hWnd, HOTKEY_ID, NativeMethods.MOD_CONTROL | NativeMethods.MOD_NOREPEAT, NativeMethods.VK_SPACE);
+            return false;
         }
 
         public void Unregister()

@@ -76,7 +76,7 @@
 | `Escape` | Pencereyi kapat |
 | `pano` veya `cb` | Pano geçmişini listele |
 | `g metin` | Google'da ara |
-| `y metin` | Yandex'te ara |
+| `y metin` | YouTube'da ara |
 | `gh metin` | GitHub'da ara |
 | `w metin` | Wikipedia'da ara |
 | `b metin` | Bing'de ara |
@@ -154,7 +154,11 @@ Ayarlar `%AppData%\WinArma\settings.json` dosyasına kaydedilir.
 
 ## ⚡ Snippet Kısayolları / Snippet Shortcuts
 
-`settings.json` içindeki `Snippets` bölümünü düzenleyerek kendi kısayollarınızı ekleyebilirsiniz:
+Kısayolları **Ayarlar → Metin Kısayolları** bölümünden ekleyebilir, düzenleyebilir ve silebilirsiniz
+(*Add, edit and delete snippets under* **Settings → Metin Kısayolları**). `!tarih`, `!saat`, `!bugun` ve `!guid`
+yerleşiktir ve değiştirilemez.
+
+İsterseniz `settings.json` içindeki `Snippets` bölümünü elle de düzenleyebilirsiniz:
 
 ```json
 {
@@ -162,10 +166,7 @@ Ayarlar `%AppData%\WinArma\settings.json` dosyasına kaydedilir.
     "!mail": "ornek@email.com",
     "!iban": "TR00 0000 0000 0000 0000 00",
     "!tel": "+90 555 000 00 00",
-    "!adres": "Örnek Mah. No:1 İstanbul",
-    "!guid": "__auto__",
-    "!tarih": "__date__",
-    "!saat": "__time__"
+    "!adres": "Örnek Mah. No:1 İstanbul"
   }
 }
 ```

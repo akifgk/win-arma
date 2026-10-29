@@ -157,6 +157,59 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Snippet editor: text boxes -->
+        <Style x:Key="SnippetTextBox" TargetType="{x:Type TextBox}">
+            <Setter Property="Background" Value="#252736"/>
+            <Setter Property="Foreground" Value="#E5E7EB"/>
+            <Setter Property="CaretBrush" Value="#E5E7EB"/>
+            <Setter Property="BorderBrush" Value="#3A3D52"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="7,5"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="7">
+                            <ScrollViewer x:Name="PART_ContentHost" Padding="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#60A5FA"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Snippet editor: flat buttons -->
+        <Style x:Key="SnippetFlatButton" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#9CA3AF"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="btnBorder" Background="{TemplateBinding Background}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="btnBorder" Property="Background" Value="#2C2E40"/>
+                                <Setter Property="Foreground" Value="#FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
     <!-- Outer Dialog Border with Shadow -->
@@ -301,6 +354,61 @@
                                 <CheckBox x:Name="ClipboardCheckBox" Content="📋 Pano Geçmişi ('pano' veya 'cb' ile son 50 kopyalanan metin)"/>
                                 <CheckBox x:Name="QuickLookCheckBox" Content="👀 Dosya Hızlı Önizleme (macOS Quick Look - Shift+Boşluk ile)"/>
                                 <CheckBox x:Name="SnippetsCheckBox" Content="⚡ Metin Kısayolları ('!mail', '!iban', '!tarih', '!tel' şablonları)"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Section: Metin Kısayolları -->
+                        <TextBlock Text="METİN KISAYOLLARI" FontSize="11" FontWeight="Bold" Foreground="#60A5FA" Margin="0,0,0,8"/>
+                        <Border Background="#202230" CornerRadius="10" Padding="14,10" Margin="0,0,0,16" BorderBrush="#2C2E40" BorderThickness="1">
+                            <StackPanel>
+                                <TextBlock TextWrapping="Wrap" Foreground="#9CA3AF" FontSize="11" Margin="0,2,0,10"
+                                           Text="Arama kutusuna kısayolu yazıp Enter'a basınca içerik panoya kopyalanır. Kısayollar ! ile başlar. Yerleşik !tarih, !saat, !bugun ve !guid değiştirilemez."/>
+
+                                <ItemsControl x:Name="SnippetList">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,0,0,8">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="110"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox Grid.Column="0"
+                                                         Style="{StaticResource SnippetTextBox}"
+                                                         VerticalAlignment="Top"
+                                                         Text="{Binding Key, UpdateSourceTrigger=PropertyChanged}"/>
+                                                <TextBox Grid.Column="1"
+                                                         Style="{StaticResource SnippetTextBox}"
+                                                         Margin="8,0,0,0"
+                                                         AcceptsReturn="True"
+                                                         TextWrapping="Wrap"
+                                                         MaxHeight="96"
+                                                         VerticalScrollBarVisibility="Auto"
+                                                         Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"/>
+                                                <Button Grid.Column="2"
+                                                        Style="{StaticResource SnippetFlatButton}"
+                                                        Content="✕"
+                                                        ToolTip="Kısayolu sil"
+                                                        Width="28"
+                                                        Height="28"
+                                                        Margin="6,0,0,0"
+                                                        VerticalAlignment="Top"
+                                                        Click="DeleteSnippet_Click"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <TextBlock x:Name="SnippetErrorText" Foreground="#F87171" FontSize="11" TextWrapping="Wrap"
+                                           Margin="0,0,0,6" Visibility="Collapsed"/>
+
+                                <Button Style="{StaticResource SnippetFlatButton}"
+                                        Content="＋ Yeni kısayol ekle"
+                                        Foreground="#60A5FA"
+                                        HorizontalAlignment="Left"
+                                        Padding="8,5"
+                                        FontSize="12"
+                                        Click="AddSnippet_Click"/>
                             </StackPanel>
                         </Border>
 

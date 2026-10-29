@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
@@ -41,6 +42,11 @@ namespace WinArma.Services
                     var settings = JsonSerializer.Deserialize<AppSettings>(json);
                     if (settings != null)
                     {
+                        // The JSON deserializer replaces the default dictionary with a case-sensitive one
+                        settings.Snippets = new Dictionary<string, string>(
+                            settings.Snippets ?? new Dictionary<string, string>(),
+                            StringComparer.OrdinalIgnoreCase);
+
                         // Check actual startup registry status
                         settings.RunAtStartup = CheckStartupRegistry();
                         return settings;
