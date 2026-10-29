@@ -1,0 +1,85 @@
+name: Build & Release
+
+on:
+  push:
+    branches: [ main, master ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────────
+  build:
+    name: 🔨 Build & Test
+    runs-on: windows-latest
+
+    steps:
+      - name: ⬇️ Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: 📦 Restore dependencies
+        run: dotnet restore
+
+      - name: 🏗️ Build
+        run: dotnet build --configuration Release --no-restore
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  publish:
+    name: 🚀 Publish Release
+    runs-on: windows-latest
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: ⬇️ Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: 📦 Restore dependencies
+        run: dotnet restore
+
+      - name: 📤 Publish (framework-dependent)
+        run: |
+          dotnet publish `
+            --configuration Release `
+            --output ./publish `
+            --no-restore
+
+      - name: 🗜️ Create release archive
+        run: |
+          $tag = "${{ github.ref_name }}"
+          Compress-Archive -Path ./publish/* -DestinationPath "WinArma-$tag.zip" -Force
+          Write-Host "Archive created: WinArma-$tag.zip"
+
+      - name: 🏷️ Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "Win-Arma ${{ github.ref_name }}"
+          body: |
+            ## Win-Arma ${{ github.ref_name }}
+
+            ### 📥 Kurulum / Installation
+            1. Aşağıdaki `WinArma-${{ github.ref_name }}.zip` dosyasını indirin
+            2. Bir klasöre çıkartın
+            3. [.NET 9 Runtime](https://dotnet.microsoft.com/download/dotnet/9) yüklü olduğundan emin olun
+            4. `WinArma.exe` çalıştırın
+            5. `Alt + Space` ile başlatın!
+
+            ---
+            See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details.
+          files: "WinArma-${{ github.ref_name }}.zip"
+          draft: false
+          prerelease: false

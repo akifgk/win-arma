@@ -1,0 +1,288 @@
+<Window x:Class="WinArma.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WinArma"
+        mc:Ignorable="d"
+        Title="Win-Arma"
+        Width="740" 
+        SizeToContent="Height"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        Topmost="True"
+        ResizeMode="NoResize"
+        WindowStartupLocation="Manual">
+
+    <Window.Resources>
+        <!-- Dynamic Theme Brushes (Default: Dark) -->
+        <SolidColorBrush x:Key="ThemeWindowBg" Color="#181920"/>
+        <SolidColorBrush x:Key="ThemeWindowBorder" Color="#2E303F"/>
+        <SolidColorBrush x:Key="ThemeTextPrimary" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="ThemeTextSecondary" Color="#9CA3AF"/>
+        <SolidColorBrush x:Key="ThemePlaceholder" Color="#6B7280"/>
+        <SolidColorBrush x:Key="ThemeDivider" Color="#262835"/>
+        <SolidColorBrush x:Key="ThemeFooterBg" Color="#13141B"/>
+        <SolidColorBrush x:Key="ThemeFooterBorder" Color="#232533"/>
+        <SolidColorBrush x:Key="ThemeFooterText" Color="#6B7280"/>
+        <SolidColorBrush x:Key="ThemeItemHover" Color="#2A2C3D"/>
+        <SolidColorBrush x:Key="ThemeItemSelected" Color="#32364E"/>
+        <SolidColorBrush x:Key="ThemeIconBg" Color="#222433"/>
+        <SolidColorBrush x:Key="ThemeBadgeBg" Color="#242636"/>
+        <SolidColorBrush x:Key="ThemeHotkeyBg" Color="#232530"/>
+        <SolidColorBrush x:Key="ThemeHotkeyBorder" Color="#374151"/>
+        <SolidColorBrush x:Key="ThemeHotkeyText" Color="#9CA3AF"/>
+
+        <!-- Custom ListBoxItem Style with Dynamic Theme Colors -->
+        <Style TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Margin" Value="0,2"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border x:Name="ItemBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource ThemeItemHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource ThemeItemSelected}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <!-- Outer Container with Drop Shadow & Scale Animation -->
+    <Grid Margin="20">
+        <Border x:Name="MainContainerBorder"
+                CornerRadius="16"
+                Background="{DynamicResource ThemeWindowBg}"
+                BorderBrush="{DynamicResource ThemeWindowBorder}"
+                BorderThickness="1.2"
+                RenderTransformOrigin="0.5, 0.2">
+            
+            <Border.RenderTransform>
+                <ScaleTransform x:Name="WindowScaleTransform" ScaleX="1.0" ScaleY="1.0"/>
+            </Border.RenderTransform>
+
+            <Border.Effect>
+                <DropShadowEffect x:Name="MainShadowEffect"
+                                  BlurRadius="32"
+                                  Color="#000000"
+                                  Opacity="0.55"
+                                  ShadowDepth="10"
+                                  Direction="270"/>
+            </Border.Effect>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/> <!-- Search Bar -->
+                    <RowDefinition Height="Auto"/> <!-- Divider -->
+                    <RowDefinition Height="Auto"/> <!-- Results List (Animated Height) -->
+                    <RowDefinition Height="Auto"/> <!-- Footer -->
+                </Grid.RowDefinitions>
+
+                <!-- Search Input Header -->
+                <Grid Grid.Row="0" Margin="18,14,18,14">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Search Icon -->
+                    <TextBlock Grid.Column="0"
+                               Text="🔍"
+                               FontSize="18"
+                               VerticalAlignment="Center"
+                               Margin="0,0,12,0"
+                               Opacity="0.85"/>
+
+                    <!-- Search Box -->
+                    <Grid Grid.Column="1">
+                        <!-- Placeholder -->
+                        <TextBlock x:Name="PlaceholderText"
+                                   Text="Uygulama, dosya veya web'de ara..."
+                                   FontSize="16"
+                                   Foreground="{DynamicResource ThemePlaceholder}"
+                                   VerticalAlignment="Center"
+                                   IsHitTestVisible="False"
+                                   Margin="2,0,0,0"/>
+
+                        <!-- Text Input -->
+                        <TextBox x:Name="SearchBox"
+                                 FontSize="16"
+                                 Foreground="{DynamicResource ThemeTextPrimary}"
+                                 CaretBrush="#3B82F6"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 VerticalAlignment="Center"
+                                 TextChanged="SearchBox_TextChanged"
+                                 PreviewKeyDown="SearchBox_PreviewKeyDown"/>
+                    </Grid>
+
+                    <!-- Hotkey Hint Badge -->
+                    <Border x:Name="HotkeyBadgeBorder"
+                            Grid.Column="2"
+                            Background="{DynamicResource ThemeHotkeyBg}"
+                            BorderBrush="{DynamicResource ThemeHotkeyBorder}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            Padding="8,4"
+                            VerticalAlignment="Center">
+                        <TextBlock x:Name="HotkeyBadgeText"
+                                   Text="Alt + Space"
+                                   FontSize="11"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ThemeHotkeyText}"/>
+                    </Border>
+                </Grid>
+
+                <!-- Subtle Divider (visible when results exist) -->
+                <Border x:Name="DividerLine"
+                        Grid.Row="1"
+                        Height="1"
+                        Background="{DynamicResource ThemeDivider}"
+                        Visibility="Collapsed"/>
+
+                <!-- Results List (Smooth Animated Height) -->
+                <ListBox x:Name="ResultsList"
+                         Grid.Row="2"
+                         Height="0"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         Padding="12,8"
+                         Visibility="Collapsed"
+                         MouseDoubleClick="ResultsList_MouseDoubleClick"
+                         PreviewKeyDown="ResultsList_PreviewKeyDown">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Stretch" Margin="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="38"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Icon Area -->
+                                <Border Grid.Column="0"
+                                        Width="30"
+                                        Height="30"
+                                        CornerRadius="7"
+                                        Background="{DynamicResource ThemeIconBg}"
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Left">
+                                    <Grid>
+                                        <!-- Real Image Icon -->
+                                        <Image Source="{Binding Icon}"
+                                               Width="22"
+                                               Height="22"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Center"
+                                               RenderOptions.BitmapScalingMode="HighQuality"/>
+
+                                        <!-- Emoji Fallback if Icon is null -->
+                                        <TextBlock Text="{Binding IconSymbol}"
+                                                   FontSize="15"
+                                                   VerticalAlignment="Center"
+                                                   HorizontalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Icon}" Value="{x:Null}">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Title and Subtitle -->
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,10,0">
+                                    <TextBlock Text="{Binding Title}"
+                                               FontSize="14"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource ThemeTextPrimary}"
+                                               TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{Binding Subtitle}"
+                                               FontSize="11.5"
+                                               Foreground="{DynamicResource ThemeTextSecondary}"
+                                               Margin="0,2,0,0"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+
+                                <!-- Category Badge -->
+                                <Border Grid.Column="2"
+                                        CornerRadius="5"
+                                        Padding="7,2"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,10,0"
+                                        Background="{DynamicResource ThemeBadgeBg}">
+                                    <TextBlock Text="{Binding CategoryBadgeText}"
+                                               FontSize="10.5"
+                                               FontWeight="Medium"
+                                               Foreground="{Binding CategoryBadgeColor}"/>
+                                </Border>
+
+                                <!-- Action Hint (↵) -->
+                                <TextBlock Grid.Column="3"
+                                           Text="↵"
+                                           FontSize="13"
+                                           Foreground="#3B82F6"
+                                           FontWeight="Bold"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,4,0"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Footer Bar -->
+                <Border Grid.Row="3"
+                        Background="{DynamicResource ThemeFooterBg}"
+                        BorderBrush="{DynamicResource ThemeFooterBorder}"
+                        BorderThickness="0,1,0,0"
+                        CornerRadius="0,0,16,16"
+                        Padding="16,8">
+                    <Grid>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="[↑↓] Gezin" FontSize="11" Foreground="{DynamicResource ThemeFooterText}" Margin="0,0,10,0"/>
+                            <TextBlock Text="•" FontSize="11" Foreground="{DynamicResource ThemeFooterBorder}" Margin="0,0,10,0"/>
+                            <TextBlock Text="[Enter] Seç" FontSize="11" Foreground="{DynamicResource ThemeFooterText}" Margin="0,0,10,0"/>
+                            <TextBlock Text="•" FontSize="11" Foreground="{DynamicResource ThemeFooterBorder}" Margin="0,0,10,0"/>
+                            <TextBlock Text="[Shift+Boşluk] Önizle" FontSize="11" Foreground="{DynamicResource ThemeFooterText}" Margin="0,0,10,0"/>
+                            <TextBlock Text="•" FontSize="11" Foreground="{DynamicResource ThemeFooterBorder}" Margin="0,0,10,0"/>
+                            <TextBlock Text="[Esc] Kapat" FontSize="11" Foreground="{DynamicResource ThemeFooterText}"/>
+                        </StackPanel>
+
+                        <TextBlock Text="Win-Arma Spotlight"
+                                   FontSize="11"
+                                   FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ThemeFooterText}"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

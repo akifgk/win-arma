@@ -1,0 +1,57 @@
+# =============================================================================
+# Win-Arma — .gitignore
+# =============================================================================
+
+# ── Build output ──────────────────────────────────────────────────────────────
+bin/
+obj/
+publish/
+out/
+artifacts/
+
+# ── Release packages ──────────────────────────────────────────────────────────
+*.zip
+*.nupkg
+*.snupkg
+
+# ── Visual Studio ─────────────────────────────────────────────────────────────
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+# ── Rider / JetBrains ─────────────────────────────────────────────────────────
+.idea/
+*.DotSettings.user
+
+# ── VS Code ───────────────────────────────────────────────────────────────────
+.vscode/
+!.vscode/extensions.json
+
+# ── .NET ──────────────────────────────────────────────────────────────────────
+*.log
+*.tmp
+project.lock.json
+project.fragment.lock.json
+global.json.lock
+
+# ── NuGet ─────────────────────────────────────────────────────────────────────
+packages/
+*.nupkg
+nuget.dgspec.json
+nuget.g.props
+nuget.g.targets
+
+# ── OS files ──────────────────────────────────────────────────────────────────
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+*.lnk
+
+# ── User data (stored in %AppData%, never in repo) ────────────────────────────
+settings.json
+clipboard_history.json
